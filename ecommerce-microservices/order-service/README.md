@@ -17,15 +17,14 @@ Order Service
 ├── Services (Lógica de negocio)
 └── RabbitMQ (Publicador/Consumidor)
 
-text
 
 ## 🚀 Configuración Rápida
 
 ### 1. Instalar Dependencias
-```bash
+
 npm install
 2. Configurar Variables de Entorno
-bash
+
 cp .env.example .env
 3. Editar Archivo .env
 env

@@ -52,7 +52,7 @@ text
 ## 🚀 Guía de Instalación Rápida
 
 ### 1. Clonar el Repositorio
-```bash
+
 git clone <url-del-repositorio>
 cd ecommerce-microservices
 2. Configurar Bases de Datos PostgreSQL
@@ -100,7 +100,7 @@ Order Service: http://localhost:3001/api/v1/orders
 
 Inventory Service: http://localhost:3002/api/v1/products
 
-RabbitMQ Management: http://localhost:15672
+RabbitMQ Management: http://localhost:15673
 
 Usuario: admin
 
