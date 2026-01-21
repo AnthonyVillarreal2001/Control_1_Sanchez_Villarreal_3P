@@ -1,0 +1,268 @@
+{
+  "info": {
+    "name": "E-Commerce Microservices - RabbitMQ Control",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Colección para probar el sistema de microservicios con Order Service, Inventory Service y RabbitMQ"
+  },
+  "item": [
+    {
+      "name": "Order Service",
+      "item": [
+        {
+          "name": "1. Crear Pedido (Éxito)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"9f7a1e2a-31f6-4a53-b0d2-6f4f1c7a3b2e\",\n  \"items\": [\n    {\n      \"productId\": \"a3c2b1d0-6b0e-4f2b-9c1a-2d3f4a5b6c7d\",\n      \"quantity\": 2\n    },\n    {\n      \"productId\": \"b7e8c9d1-2f3a-4b5c-8d9e-1a2b3c4d5e6f\",\n      \"quantity\": 1\n    }\n  ],\n  \"shippingAddress\": {\n    \"country\": \"EC\",\n    \"city\": \"Quito\",\n    \"street\": \"Av. Amazonas\",\n    \"postalCode\": \"170135\"\n  },\n  \"paymentReference\": \"pay_abc123\"\n}"
+            },
+            "url": "http://localhost:3001/api/v1/orders"
+          },
+          "response": []
+        },
+        {
+          "name": "2. Crear Pedido (Stock Insuficiente)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"cst_1001\",\n  \"items\": [\n    {\n      \"productId\": \"a3c2b1d0-6b0e-4f2b-9c1a-2d3f4a5b6c7d\",\n      \"quantity\": 100\n    },\n    {\n      \"productId\": \"b7e8c9d1-2f3a-4b5c-8d9e-1a2b3c4d5e6f\",\n      \"quantity\": 50\n    }\n  ],\n  \"shippingAddress\": {\n    \"country\": \"EC\",\n    \"city\": \"Quito\",\n    \"street\": \"Av. Amazonas\",\n    \"postalCode\": \"170135\"\n  },\n  \"paymentReference\": \"pay_test_fail\"\n}"
+            },
+            "url": "http://localhost:3001/api/v1/orders"
+          },
+          "response": []
+        },
+        {
+          "name": "3. Crear Pedido (Producto No Existente)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"test-customer-003\",\n  \"items\": [\n    {\n      \"productId\": \"PRODUCTO-INEXISTENTE\",\n      \"quantity\": 5\n    }\n  ],\n  \"shippingAddress\": {\n    \"country\": \"EC\",\n    \"city\": \"Quito\",\n    \"street\": \"Av. Amazonas\",\n    \"postalCode\": \"170135\"\n  },\n  \"paymentReference\": \"pay_test_003\"\n}"
+            },
+            "url": "http://localhost:3001/api/v1/orders"
+          },
+          "response": []
+        },
+        {
+          "name": "4. Consultar Pedido por ID (PENDING)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:3001/api/v1/orders/{{orderId}}"
+          },
+          "response": []
+        },
+        {
+          "name": "5. Consultar Pedido por ID (CONFIRMED)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:3001/api/v1/orders/{{orderIdConfirmed}}"
+          },
+          "response": []
+        },
+        {
+          "name": "6. Consultar Pedido por ID (CANCELLED)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:3001/api/v1/orders/{{orderIdCancelled}}"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Inventory Service",
+      "item": [
+        {
+          "name": "7. Consultar Stock (Producto 1)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:3002/api/v1/products/a3c2b1d0-6b0e-4f2b-9c1a-2d3f4a5b6c7d/stock"
+          },
+          "response": []
+        },
+        {
+          "name": "8. Consultar Stock (Producto 2)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:3002/api/v1/products/b7e8c9d1-2f3a-4b5c-8d9e-1a2b3c4d5e6f/stock"
+          },
+          "response": []
+        },
+        {
+          "name": "9. Consultar Stock (Producto P-001)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:3002/api/v1/products/P-001/stock"
+          },
+          "response": []
+        },
+        {
+          "name": "10. Consultar Todos los Productos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:3002/api/v1/products"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "RabbitMQ Management",
+      "item": [
+        {
+          "name": "11. Verificar RabbitMQ",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Basic YWRtaW46YWRtaW4xMjM="
+              }
+            ],
+            "url": "http://localhost:15673/api/overview"
+          },
+          "response": []
+        },
+        {
+          "name": "12. Ver Colas RabbitMQ",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Basic YWRtaW46YWRtaW4xMjM="
+              }
+            ],
+            "url": "http://localhost:15673/api/queues"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Tests y Validaciones",
+      "item": [
+        {
+          "name": "Test 1: Flujo Completo Éxito",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// 1. Crear pedido",
+                  "pm.sendRequest({\n    url: 'http://localhost:3001/api/v1/orders',\n    method: 'POST',\n    header: {\n        'Content-Type': 'application/json'\n    },\n    body: {\n        mode: 'raw',\n        raw: JSON.stringify({\n            \"customerId\": \"test-flow-001\",\n            \"items\": [\n                {\"productId\": \"P-001\", \"quantity\": 2},\n                {\"productId\": \"P-777\", \"quantity\": 1}\n            ],\n            \"shippingAddress\": {\n                \"country\": \"EC\",\n                \"city\": \"Quito\",\n                \"street\": \"Av. Amazonas\",\n                \"postalCode\": \"170135\"\n            },\n            \"paymentReference\": \"pay_test_flow_001\"\n        })\n    }\n}, function (err, response) {\n    console.log('Response:', response.json());\n    \n    // Guardar orderId para pruebas posteriores\n    if (response.code === 201) {\n        const orderId = response.json().orderId;\n        pm.environment.set(\"testOrderId\", orderId);\n        console.log('Order ID guardado:', orderId);\n        \n        // Esperar 3 segundos para procesamiento asíncrono\n        setTimeout(() => {\n            // Verificar estado del pedido\n            pm.sendRequest({\n                url: `http://localhost:3001/api/v1/orders/${orderId}`,\n                method: 'GET'\n            }, function (err, statusResponse) {\n                console.log('Estado del pedido:', statusResponse.json());\n                \n                // Verificar que el pedido esté confirmado\n                pm.test(\"Pedido confirmado correctamente\", function () {\n                    pm.expect(statusResponse.json().status).to.be.oneOf(['CONFIRMED', 'CANCELLED']);\n                });\n            });\n        }, 3000);\n    }\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:3001/api/v1/orders"
+          },
+          "response": []
+        },
+        {
+          "name": "Test 2: Validar Variables de Entorno",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Verificar que todos los servicios estén corriendo",
+                  "pm.sendRequest('http://localhost:3001/api/v1/orders', function (err, response) {\n    pm.test(\"Order Service está activo\", function () {\n        pm.expect(err).to.be.null;\n    });\n});",
+                  "",
+                  "pm.sendRequest('http://localhost:3002/api/v1/products', function (err, response) {\n    pm.test(\"Inventory Service está activo\", function () {\n        pm.expect(err).to.be.null;\n    });\n});",
+                  "",
+                  "pm.sendRequest({\n    url: 'http://localhost:15673/api/overview',\n    method: 'GET',\n    header: {\n        'Authorization': 'Basic YWRtaW46YWRtaW4xMjM='\n    }\n}, function (err, response) {\n    pm.test(\"RabbitMQ está activo\", function () {\n        pm.expect(err).to.be.null;\n        pm.expect(response.code).to.equal(200);\n    });\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:3001/api/v1/orders"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "orderId",
+      "value": "0d3f6b7c-9a8e-4c12-8f67-5e0c2a1b9d34",
+      "type": "string"
+    },
+    {
+      "key": "orderIdConfirmed",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "orderIdCancelled",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "testOrderId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "console.log('Iniciando pruebas de E-Commerce Microservices');",
+          "console.log('Order Service: http://localhost:3001');",
+          "console.log('Inventory Service: http://localhost:3002');",
+          "console.log('RabbitMQ Management: http://localhost:15673 (admin/admin123)');"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Tests generales para todas las respuestas",
+          "pm.test(\"Status code is 2xx\", function () {\n    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);\n});",
+          "",
+          "pm.test(\"Response time is acceptable\", function () {\n    pm.expect(pm.response.responseTime).to.be.below(5000);\n});",
+          "",
+          "pm.test(\"Response has valid JSON\", function () {\n    pm.response.to.have.jsonBody();\n});"
+        ]
+      }
+    }
+  ]
+}

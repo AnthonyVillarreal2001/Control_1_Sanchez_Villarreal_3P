@@ -1,0 +1,6 @@
+/ecommerce-microservices/inventory-service/node_modules
+/ecommerce-microservices/order-service/node_modules
+ecommerce-microservices/order-service/package-lock.json
+ecommerce-microservices/inventory-service/package-lock.json
+ecommerce-microservices/inventory-service/.env
+ecommerce-microservices/order-service/.env
