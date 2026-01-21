@@ -55,7 +55,7 @@ ecommerce-microservices/
 
 ### 1. Clonar el Repositorio
 ```bash
-git clone <url-del-repositorio>
+git clone <https://github.com/AnthonyVillarreal2001/Control_1_Sanchez_Villarreal_3P.git>
 cd ecommerce-microservices
 ```
 ### 2. Configurar Bases de Datos PostgreSQL
@@ -119,14 +119,14 @@ npm run dev
 ## 📊 Flujo de Trabajo del Sistema
 ### Caso 1: Pedido Confirmado
 
-#### 1. Cliente → POST /orders
-#### 2. Order Service crea pedido (PENDING)
-#### 3. Order Service publica OrderCreated en RabbitMQ
-#### 4. Inventory Service consume OrderCreated
-#### 5. Inventory Service verifica stock → StockReserved
-#### 6. Order Service consume StockReserved
-#### 7. Order Service actualiza pedido a CONFIRMED
-#### 8. Cliente puede consultar estado (CONFIRMED)
+1. Cliente → POST /orders
+2. Order Service crea pedido (PENDING)
+3. Order Service publica OrderCreated en RabbitMQ
+4. Inventory Service consume OrderCreated
+5. Inventory Service verifica stock → StockReserved
+6. Order Service consume StockReserved
+7. Order Service actualiza pedido a CONFIRMED
+8. Cliente puede consultar estado (CONFIRMED)
 ### Caso 2: Pedido Cancelado
 
 1. Cliente → POST /orders
@@ -146,14 +146,14 @@ npm run dev
 
 ## 📡 Endpoints Principales
 ## Order Service
-POST /api/v1/orders - Crear nuevo pedido
+- POST /api/v1/orders - Crear nuevo pedido
 
-GET /api/v1/orders/{orderId} - Consultar estado del pedido
+- GET /api/v1/orders/{orderId} - Consultar estado del pedido
 
 ## Inventory Service
-GET /api/v1/products/{productId}/stock - Consultar stock de producto
+- GET /api/v1/products/{productId}/stock - Consultar stock de producto
 
-GET /api/v1/products - Listar todos los productos
+- GET /api/v1/products - Listar todos los productos
 
 ## 🔧 Variables de Entorno
 ```bash
@@ -171,30 +171,30 @@ Inventory Service (.env.example)
 - CANCELLED: Stock insuficiente, pedido cancelado
 
 ## 🎯 Características Implementadas
-✅ Comunicación asíncrona con RabbitMQ
-✅ Microservicios independientes
-✅ Bases de datos PostgreSQL separadas
-✅ Manejo de transacciones
-✅ Reconexión automática
-✅ Logs detallados
-✅ Pruebas Postman incluidas
-✅ Docker Compose para RabbitMQ
-✅ UUIDs para todos los identificadores
-✅ Flujo completo según especificaciones
+- ✅ Comunicación asíncrona con RabbitMQ
+- ✅ Microservicios independientes
+- ✅ Bases de datos PostgreSQL separadas
+- ✅ Manejo de transacciones
+- ✅ Reconexión automática
+- ✅ Logs detallados
+- ✅ Pruebas Postman incluidas
+- ✅ Docker Compose para RabbitMQ
+- ✅ UUIDs para todos los identificadores
+- ✅ Flujo completo según especificaciones
 
 ## 📄 Licencia
-Este proyecto está bajo la Licencia ESPE.
+- Este proyecto está bajo la Licencia ESPE.
 
 ## 👥 Autores
-Angelo Sanchez y Anthony Villarreal
+- Angelo Sanchez y Anthony Villarreal
 
-Universidad de las Fuerzas Armadas ESPE
+- Universidad de las Fuerzas Armadas ESPE
 
-Departamento de Ciencias de la Computación
+- Departamento de Ciencias de la Computación
 
-Carrera de Software
+- Carrera de Software
 
-Aplicaciones Distribuidas
+- Aplicaciones Distribuidas
 
 ## 📅 Fecha
-21 de enero de 2026
+- 21 de enero de 2026

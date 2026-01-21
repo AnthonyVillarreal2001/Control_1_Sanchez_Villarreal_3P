@@ -11,68 +11,71 @@ Microservicio responsable de la gestión de inventario en el sistema de e-commer
 - Proporcionar endpoints para consulta manual de stock
 
 ## 🏗️ Arquitectura Interna
+```bash
 Inventory Service
 ├── Controllers (REST API)
 ├── Models (PostgreSQL)
 ├── Services (Lógica de negocio)
 └── RabbitMQ (Consumidor/Publicador)
-
-text
+```
 
 ## 🚀 Configuración Rápida
 
 ### 1. Instalar Dependencias
-
+```bash
 npm install
-2. Configurar Variables de Entorno
-
+```
+### 2. Configurar Variables de Entorno
+```bash
 cp .env.example .env
-3. Editar Archivo .env
-env
+```
+### 3. Editar Archivo .env dependiendo tus credenciales
+```bash
 PORT=3002
 DB_HOST=localhost
 DB_PORT=5432
-DB_NAME=control1_3p_inventorydb
-DB_USER=postgres
-DB_PASSWORD=1234
+DB_NAME=/*nombre de la base de datos de inventario*/
+DB_USER=/*usuario*/
+DB_PASSWORD=/*contraseña*/
 RABBITMQ_URL=amqp://admin:admin123@localhost:5673
 ORDER_EXCHANGE=order_exchange
 INVENTORY_QUEUE=inventory_queue
 RESPONSE_QUEUE=order_response_queue
-4. Ejecutar el Servicio
-bash
+```
+### 4. Ejecutar el Servicio
+```bash
 # Modo desarrollo
 npm run dev
 
 # Modo producción
 npm start
-
-🗄️ Estructura de Base de Datos
-Tabla: products_stock
-sql
+```
+## 🗄️ Estructura de Base de Datos
+## Tabla: products_stock
+```bash
 CREATE TABLE products_stock (
     product_id VARCHAR(255) PRIMARY KEY,
     available_stock INTEGER NOT NULL DEFAULT 0,
     reserved_stock INTEGER NOT NULL DEFAULT 0,
     updated_at TIMESTAMP DEFAULT NOW()
 );
+```
 
-Consumo de Eventos
-Queue: inventory_queue
+## Consumo de Eventos
+- Queue: inventory_queue
 
-Routing Key: order.created
+- Routing Key: order.created
 
-Mensaje: Evento OrderCreated
+- Mensaje: Evento OrderCreated
 
-Publicación de Eventos
-Exchange: order_exchange
+## Publicación de Eventos
+- Exchange: order_exchange
 
-Routing Key: inventory.response
+- Routing Key: inventory.response
 
-Mensajes: StockReserved, StockRejected
+- Mensajes: StockReserved, StockRejected
 
-Flujo de Procesamiento
-text
+## Flujo de Procesamiento
 1. Consume OrderCreated desde inventory_queue
 2. Verifica stock para cada producto en la orden
 3. Si hay stock suficiente:
@@ -80,8 +83,8 @@ text
    - Publica StockReserved
 4. Si NO hay stock suficiente:
    - Publica StockRejected con razón
-Formato de Evento StockReserved
-json
+## Formato de Evento StockReserved
+```bash
 {
   "eventType": "StockReserved",
   "orderId": "uuid-here",
@@ -91,8 +94,9 @@ json
   ],
   "reservedAt": "2026-01-20T10:32:17Z"
 }
-Formato de Evento StockRejected
-json
+```
+## Formato de Evento StockRejected
+```bash
 {
   "eventType": "StockRejected",
   "orderId": "uuid-here",
@@ -100,8 +104,9 @@ json
   "reason": "Insufficient stock for product P-777",
   "rejectedAt": "2026-01-20T10:32:17Z"
 }
-🔧 Dependencias Principales
-json
+```
+## 🔧 Dependencias Principales
+```bash
 {
   "express": "^4.18.2",
   "pg": "^8.11.3",
@@ -109,64 +114,53 @@ json
   "uuid": "^9.0.0",
   "dotenv": "^16.3.1"
 }
+```
+## 📊 Lógica de Negocio
+## Verificación de Stock
 
-📊 Lógica de Negocio
-Verificación de Stock
-javascript
-// Para cada producto en la orden:
+- // Para cada producto en la orden:
 1. Verificar que el producto exista
 2. Verificar que available_stock >= quantity solicitada
 3. Si ambas condiciones se cumplen, proceder con la reserva
-Reserva de Stock
-sql
+## Reserva de Stock
+```bash
 -- Actualizar stock disponible y reservado
 UPDATE products_stock 
 SET available_stock = available_stock - :quantity,
     reserved_stock = reserved_stock + :quantity,
     updated_at = NOW()
 WHERE product_id = :productId;
-Manejo de Transacciones
-Todas las operaciones de stock se realizan dentro de transacciones
+```
+## Manejo de Transacciones
+- Todas las operaciones de stock se realizan dentro de transacciones
 
-Uso de FOR UPDATE para bloqueo de filas
+- Uso de FOR UPDATE para bloqueo de filas
 
-Rollback en caso de error en cualquier producto
+- Rollback en caso de error en cualquier producto
 
-🔄 Comandos Útiles
-Reiniciar el Servicio
-bash
-# Detener
-npm stop
+## 📝 Notas de Implementación
+- Transacciones: Uso de transacciones SQL para consistencia
 
-# Iniciar en modo desarrollo
-npm run dev
+- Bloqueos: Uso de FOR UPDATE para prevenir condiciones de carrera
 
-# Iniciar en modo producción
-npm start
+- Reconexión: Reconexión automática a RabbitMQ y PostgreSQL
 
-📝 Notas de Implementación
-Transacciones: Uso de transacciones SQL para consistencia
+- Logs: Logs detallados con emojis para fácil monitoreo
 
-Bloqueos: Uso de FOR UPDATE para prevenir condiciones de carrera
+- Escalabilidad: Puede ejecutarse en múltiples instancias (consume de la misma cola)
 
-Reconexión: Reconexión automática a RabbitMQ y PostgreSQL
+## 🏷️ Convenciones
+- Product IDs: Usar formatos consistentes (UUID o prefijos como P-)
 
-Logs: Logs detallados con emojis para fácil monitoreo
+- Mensajes de error: Claros y específicos
 
-Escalabilidad: Puede ejecutarse en múltiples instancias (consume de la misma cola)
+- Códigos HTTP: Uso apropiado (200, 404, 500)
 
-🏷️ Convenciones
-Product IDs: Usar formatos consistentes (UUID o prefijos como P-)
+- Timestamps: Todas las respuestas incluyen timestamps UTC
 
-Mensajes de error: Claros y específicos
-
-Códigos HTTP: Uso apropiado (200, 404, 500)
-
-Timestamps: Todas las respuestas incluyen timestamps UTC
-
-🔍 Depuración
-Ver Estado Actual del Inventario
-sql
+## 🔍 Depuración
+## Ver Estado Actual del Inventario
+```bash
 -- Conéctate a la base de datos
 psql -U postgres -d control1_3p_inventorydb
 
@@ -175,9 +169,11 @@ SELECT * FROM products_stock ORDER BY product_id;
 
 -- Ver productos con bajo stock
 SELECT * FROM products_stock WHERE available_stock < 10;
-Ver Mensajes en RabbitMQ
-bash
+```
+## Ver Mensajes en RabbitMQ
+```bash
 # Usar rabbitmqadmin (si está instalado)
 rabbitmqadmin list queues
 rabbitmqadmin get queue=inventory_queue
+```
 ✅ Inventory Service está listo para producción
