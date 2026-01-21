@@ -13,24 +13,24 @@ Implementación de un sistema de e-commerce basado en microservicios que se comu
 
 ## 🏗️ Arquitectura del Sistema
 ```bash
-┌─────────────────┐ HTTP ┌─────────────────┐
-│ Cliente ├───────────►│ Order Service │
-└─────────────────┘ └────────┬────────┘
-│
-│ RabbitMQ (OrderCreated)
-▼
-┌─────────────────┐
-│ RabbitMQ │
-│ Broker │
-└────────┬────────┘
-│
-┌───────────────────┼───────────────────┐
-│ │ │
+┌────────────┐ HTTP ┌─────────────────┐
+│ Cliente    ├─────►│ Order Service   │
+└────────────┘      └────────┬────────┘
+                             │
+                             │ RabbitMQ (OrderCreated)
+                             ▼
+                    ┌─────────────────┐
+                    │ RabbitMQ        │
+                    │ Broker          │
+                    └────────┬────────┘
+                             │
+         ┌───────────────────┼───────────────────┐
+         │                   │                   │
 ┌────────▼────────┐ ┌────────▼────────┐ ┌────────▼────────┐
-│ Inventory │ │ Order Service │ │ Order Service │
-│ Service │ │ (Consume │ │ (Consume │
-│ (Consume │ │ StockReserved) │ │ StockRejected) │
-│ OrderCreated) │ │ │ │ │
+│ Inventory       │ │ Order Service   │ │ Order Service   │
+│ Service         │ │ (Consume        │ │ (Consume        │
+│ (Consume        │ │ StockReserved)  │ │ StockRejected)  │
+│ OrderCreated)   │ │                 │ │                 │
 └─────────────────┘ └─────────────────┘ └─────────────────┘
 ```
 
@@ -156,11 +156,34 @@ npm run dev
 - GET /api/v1/products - Listar todos los productos
 
 ## 🔧 Variables de Entorno
-```bash
-Order Service (.env.example)
 
-Inventory Service (.env.example)
+## Order Service (.env.example)
+```bash
+PORT=3001
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=/*nombre de la base de datos de order*/
+DB_USER=/*usuario*/
+DB_PASSWORD=/*contraseña*/
+RABBITMQ_URL=amqp://admin:admin123@localhost:5673
+ORDER_EXCHANGE=order_exchange
+INVENTORY_QUEUE=inventory_queue
+RESPONSE_QUEUE=order_response_queue
 ```
+## Inventory Service (.env.example)
+```bash
+PORT=3001
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=/*nombre de la base de datos de inventario*/
+DB_USER=/*usuario*/
+DB_PASSWORD=/*contraseña*/
+RABBITMQ_URL=amqp://admin:admin123@localhost:5673
+ORDER_EXCHANGE=order_exchange
+INVENTORY_QUEUE=inventory_queue
+RESPONSE_QUEUE=order_response_queue
+```
+
 ## 📝 Estado del Pedido
 ## Los pedidos pueden tener estos estados:
 

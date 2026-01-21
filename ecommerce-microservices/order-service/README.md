@@ -36,7 +36,7 @@ cp .env.example .env
 PORT=3001
 DB_HOST=localhost
 DB_PORT=5432
-DB_NAME=control1_3p_orderdb
+DB_NAME=/*nombre de la base de datos de order*/
 DB_USER=/*usuario*/
 DB_PASSWORD=/*contraseña*/
 RABBITMQ_URL=amqp://admin:admin123@localhost:5673
@@ -93,11 +93,12 @@ CREATE TABLE order_items (
 - Mensajes: StockReserved, StockRejected
 
 ## 📊 Estados del Pedido
-Estado	Descripción
-PENDING	Pedido creado, esperando verificación de inventario
-CONFIRMED	Stock disponible, pedido confirmado
-CANCELLED	Stock insuficiente, pedido cancelado
 
+| Estado     | Descripción                              |
+|------------|------------------------------------------|
+| PENDING    | Esperando verificación de inventario     |
+| CONFIRMED  | Pedido confirmado (stock disponible)     |
+| CANCELLED  | Pedido cancelado (stock insuficiente)    |
 ## 📝 Notas de Implementación
 - UUIDs: Todos los orderId son generados como UUID v4
 
