@@ -55,7 +55,7 @@ ecommerce-microservices/
 
 ### 1. Clonar el Repositorio
 ```bash
-git clone <https://github.com/AnthonyVillarreal2001/Control_1_Sanchez_Villarreal_3P.git>
+git clone https://github.com/AnthonyVillarreal2001/Control_1_Sanchez_Villarreal_3P.git
 cd ecommerce-microservices
 ```
 ### 2. Configurar Bases de Datos PostgreSQL
