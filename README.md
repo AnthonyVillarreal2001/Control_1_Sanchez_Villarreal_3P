@@ -1,74 +1,72 @@
-# Control_1_Sanchez_Villarreal_3P
-E-Commerce Microservices con RabbitMQ
-📋 Descripción
-Implementación de un sistema de e-commerce basado en microservicios que se comunican de forma asíncrona mediante RabbitMQ. El sistema está compuesto por dos microservicios independientes: Order Service e Inventory Service, que procesan pedidos de manera eficiente, escalable y tolerante a fallos.
+# 🛒 E-Commerce Microservices con RabbitMQ
 
-🎯 Objetivo
-Diseñar e implementar un escenario de e-commerce donde:
+## 📚 Descripción del Proyecto
+Implementación de un sistema de e-commerce basado en microservicios que se comunican de forma asíncrona mediante RabbitMQ, diseñado para ser escalable, tolerante a fallos y eficiente en el procesamiento de pedidos.
 
-Order Service crea y gestiona pedidos
+## 🎯 Objetivos del Proyecto
+- **Objetivo General**: Diseñar e implementar un escenario de e-commerce basado en microservicios con comunicación asíncrona
+- **Objetivos Específicos**:
+  - Implementar Order Service para crear y gestionar pedidos
+  - Implementar Inventory Service para verificar y actualizar inventario
+  - Configurar RabbitMQ con exchanges y colas para garantizar robustez
+  - Modelar el flujo de negocio completo mediante mensajería asíncrona
 
-Inventory Service verifica y actualiza inventario
+## 🏗️ Arquitectura del Sistema
+┌─────────────────┐ HTTP ┌─────────────────┐
+│ Cliente ├───────────►│ Order Service │
+└─────────────────┘ └────────┬────────┘
+│
+│ RabbitMQ (OrderCreated)
+▼
+┌─────────────────┐
+│ RabbitMQ │
+│ Broker │
+└────────┬────────┘
+│
+┌───────────────────┼───────────────────┐
+│ │ │
+┌────────▼────────┐ ┌────────▼────────┐ ┌────────▼────────┐
+│ Inventory │ │ Order Service │ │ Order Service │
+│ Service │ │ (Consume │ │ (Consume │
+│ (Consume │ │ StockReserved) │ │ StockRejected) │
+│ OrderCreated) │ │ │ │ │
+└─────────────────┘ └─────────────────┘ └─────────────────┘
 
-La comunicación es asíncrona mediante RabbitMQ
-
-El sistema es escalable y tolerante a fallos
-
-🏗️ Arquitectura
 text
-┌─────────────┐     HTTP     ┌─────────────┐
-│   Cliente   │─────────────▶│ Order Service│
-└─────────────┘              └──────┬──────┘
-                                    │
-                                    │ RabbitMQ
-                                    │ (OrderCreated)
-                                    ▼
-                             ┌─────────────┐
-                             │   RabbitMQ  │
-                             │   Broker    │
-                             └──────┬──────┘
-                                    │
-                                    │ RabbitMQ
-                    ┌───────────────┼───────────────┐
-                    │               │               │
-            (OrderCreated)  (StockReserved) (StockRejected)
-                    │               │               │
-            ┌──────▼──────┐ ┌──────▼──────┐ ┌──────▼──────┐
-            │ Inventory   │ │ Order       │ │ Order       │
-            │ Service     │ │ Service     │ │ Service     │
-            └─────────────┘ └─────────────┘ └─────────────┘
-📁 Estructura del Proyecto
-text
+
+## 📁 Estructura del Repositorio
 ecommerce-microservices/
-├── order-service/              # Microservicio de Pedidos
-├── inventory-service/          # Microservicio de Inventario
-├── infrastructure/             # Infraestructura Docker
-├── postman/                   # Colecciones de pruebas
-└── README.md                  # Este archivo
-⚙️ Requisitos Previos
-Node.js (v16 o superior)
+├── order-service/ # Microservicio de Pedidos
+├── inventory-service/ # Microservicio de Inventario
+├── infrastructure/ # Configuración de Infraestructura
+├── postman/ # Colecciones de pruebas Postman
+└── README.md # Este archivo
 
-PostgreSQL (v14 o superior)
+text
 
-Docker y Docker Compose
+## ⚙️ Requisitos del Sistema
+- **Node.js 16+**
+- **PostgreSQL 14+**
+- **Docker & Docker Compose**
+- **Postman** (para pruebas)
 
-Postman (para pruebas)
+## 🚀 Guía de Instalación Rápida
 
-Git (para clonar el repositorio)
-
-🚀 Instalación Rápida
-1. Clonar el Repositorio
-bash
-git clone https://github.com/tu-usuario/ecommerce-microservices.git
+### 1. Clonar el Repositorio
+```bash
+git clone <url-del-repositorio>
 cd ecommerce-microservices
-2. Crear Bases de Datos PostgreSQL
+2. Configurar Bases de Datos PostgreSQL
 sql
 -- Conéctate a PostgreSQL
 psql -U postgres -h localhost
 
--- Ejecuta estos comandos:
+-- Crear bases de datos
 CREATE DATABASE control1_3p_orderdb;
 CREATE DATABASE control1_3p_inventorydb;
+
+-- Verificar creación
+\l
 3. Iniciar RabbitMQ
 bash
 cd infrastructure
@@ -85,113 +83,185 @@ cd inventory-service
 cp .env.example .env
 # Editar .env con tus credenciales
 npm install
-▶️ Ejecutar el Sistema
-Terminal 1: RabbitMQ
+▶️ Ejecutar la Aplicación
+Terminal 1 - RabbitMQ
 bash
 cd infrastructure
 docker-compose up
-Terminal 2: Order Service
+Terminal 2 - Order Service
 bash
 cd order-service
 npm run dev
-Terminal 3: Inventory Service
+Terminal 3 - Inventory Service
 bash
 cd inventory-service
 npm run dev
-🔧 Configurar Postman
-Importar Colección: postman/ecommerce-microservices-postman-collection.json
+🔍 Verificar Instalación
+Order Service: http://localhost:3001/api/v1/orders
 
-Importar Entorno: postman/ecommerce-microservices-environment.json
+Inventory Service: http://localhost:3002/api/v1/products
 
-Seleccionar entorno: "E-Commerce Microservices Environment"
+RabbitMQ Management: http://localhost:15672
 
-📊 Pruebas Rápidas
-Crear Pedido Exitoso
-bash
-curl -X POST http://localhost:3001/api/v1/orders \
-  -H "Content-Type: application/json" \
-  -d '{
-    "customerId": "9f7a1e2a-31f6-4a53-b0d2-6f4f1c7a3b2e",
-    "items": [{"productId": "P-001", "quantity": 2}],
-    "shippingAddress": {
-      "country": "EC",
-      "city": "Quito",
-      "street": "Av. Amazonas",
-      "postalCode": "170135"
-    },
-    "paymentReference": "pay_test_001"
-  }'
-Consultar Estado del Pedido
-bash
-curl http://localhost:3001/api/v1/orders/{orderId}
-Verificar Stock
-bash
-curl http://localhost:3002/api/v1/products/P-001/stock
-🔍 Monitoreo
-Order Service: http://localhost:3001
+Usuario: admin
 
-Inventory Service: http://localhost:3002
+Contraseña: admin123
 
-RabbitMQ Management: http://localhost:15672 (admin/admin123)
+📊 Flujo de Trabajo del Sistema
+Caso 1: Pedido Confirmado
+text
+1. Cliente → POST /orders
+2. Order Service crea pedido (PENDING)
+3. Order Service publica OrderCreated en RabbitMQ
+4. Inventory Service consume OrderCreated
+5. Inventory Service verifica stock → StockReserved
+6. Order Service consume StockReserved
+7. Order Service actualiza pedido a CONFIRMED
+8. Cliente puede consultar estado (CONFIRMED)
+Caso 2: Pedido Cancelado
+text
+1. Cliente → POST /orders
+2. Order Service crea pedido (PENDING)
+3. Order Service publica OrderCreated en RabbitMQ
+4. Inventory Service consume OrderCreated
+5. Inventory Service verifica stock → StockRejected
+6. Order Service consume StockRejected
+7. Order Service actualiza pedido a CANCELLED
+8. Cliente puede consultar estado (CANCELLED)
+🧪 Pruebas con Postman
+Importar los archivos desde la carpeta postman/:
 
-📚 Endpoints
-Order Service (PORT: 3001)
-POST /api/v1/orders - Crear pedido
+ecommerce-microservices-postman-collection.json
 
-GET /api/v1/orders/{orderId} - Consultar pedido
+ecommerce-microservices-environment.json
 
-Inventory Service (PORT: 3002)
-GET /api/v1/products - Listar productos
+📡 Endpoints Principales
+Order Service
+POST /api/v1/orders - Crear nuevo pedido
 
-GET /api/v1/products/{productId}/stock - Consultar stock
+GET /api/v1/orders/{orderId} - Consultar estado del pedido
 
+Inventory Service
+GET /api/v1/products/{productId}/stock - Consultar stock de producto
+
+GET /api/v1/products - Listar todos los productos
+
+🔧 Variables de Entorno
+Order Service (.env)
+env
+PORT=3001
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=control1_3p_orderdb
+DB_USER=postgres
+DB_PASSWORD=1234
+RABBITMQ_URL=amqp://admin:admin123@localhost:5672
+ORDER_EXCHANGE=order_exchange
+INVENTORY_QUEUE=inventory_queue
+RESPONSE_QUEUE=order_response_queue
+Inventory Service (.env)
+env
+PORT=3002
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=control1_3p_inventorydb
+DB_USER=postgres
+DB_PASSWORD=1234
+RABBITMQ_URL=amqp://admin:admin123@localhost:5672
+ORDER_EXCHANGE=order_exchange
+INVENTORY_QUEUE=inventory_queue
+RESPONSE_QUEUE=order_response_queue
 🐛 Solución de Problemas Comunes
-Error de Conexión a PostgreSQL
+Error: "Cannot connect to PostgreSQL"
 bash
-# Verificar que PostgreSQL esté corriendo
+# Verificar que PostgreSQL esté ejecutándose
 sudo systemctl status postgresql
-Error de Conexión a RabbitMQ
-bash
-# Reiniciar RabbitMQ
-cd infrastructure
-docker-compose restart
-Servicios no actualizan estado
-Verificar logs de los servicios
 
-Revisar RabbitMQ Management
+# Verificar credenciales en archivos .env
+Error: "Cannot connect to RabbitMQ"
+bash
+# Reiniciar contenedor de RabbitMQ
+cd infrastructure
+docker-compose restart rabbitmq
+
+# Verificar logs
+docker logs rabbitmq
+Error: "Services not updating"
+Verificar logs de ambos servicios
+
+Revisar RabbitMQ Management en http://localhost:15672
 
 Verificar que las colas estén configuradas
 
-📝 Datos de Prueba
-Productos disponibles por defecto:
+📊 Datos de Prueba Iniciales
+El sistema incluye estos productos por defecto:
 
-P-001: 100 unidades
-
-P-777: 5 unidades
-
-a3c2b1d0-6b0e-4f2b-9c1a-2d3f4a5b6c7d: 25 unidades
-
-b7e8c9d1-2f3a-4b5c-8d9e-1a2b3c4d5e6f: 10 unidades
-
-🔄 Reiniciar Todo el Sistema
+Product ID	Stock Disponible	Stock Reservado
+a3c2b1d0-6b0e-4f2b-9c1a-2d3f4a5b6c7d	25	0
+b7e8c9d1-2f3a-4b5c-8d9e-1a2b3c4d5e6f	10	0
+P-001	100	0
+P-777	5	0
+🔄 Comandos Útiles
+Reiniciar todo el sistema
 bash
-# Detener servicios
+# Detener todo
 cd order-service && npm stop
 cd inventory-service && npm stop
 cd infrastructure && docker-compose down
 
-# Iniciar servicios
+# Iniciar todo
 cd infrastructure && docker-compose up -d
 cd order-service && npm run dev
 cd inventory-service && npm run dev
+Limpiar bases de datos
+sql
+-- Order DB
+TRUNCATE TABLE orders, order_items RESTART IDENTITY;
+
+-- Inventory DB
+UPDATE products_stock 
+SET available_stock = CASE 
+    WHEN product_id = 'a3c2b1d0-6b0e-4f2b-9c1a-2d3f4a5b6c7d' THEN 25
+    WHEN product_id = 'b7e8c9d1-2f3a-4b5c-8d9e-1a2b3c4d5e6f' THEN 10
+    WHEN product_id = 'P-001' THEN 100
+    WHEN product_id = 'P-777' THEN 5
+    ELSE available_stock
+END,
+reserved_stock = 0;
+📝 Estado del Pedido
+Los pedidos pueden tener estos estados:
+
+PENDING: Pedido creado, esperando verificación de inventario
+
+CONFIRMED: Stock disponible, pedido confirmado
+
+CANCELLED: Stock insuficiente, pedido cancelado
+
+🎯 Características Implementadas
+✅ Comunicación asíncrona con RabbitMQ
+✅ Microservicios independientes
+✅ Bases de datos PostgreSQL separadas
+✅ Manejo de transacciones
+✅ Reconexión automática
+✅ Logs detallados
+✅ Pruebas Postman incluidas
+✅ Docker Compose para RabbitMQ
+✅ UUIDs para todos los identificadores
+✅ Flujo completo según especificaciones
+
 📄 Licencia
-MIT License
+Este proyecto está bajo la Licencia MIT.
 
-🆘 Soporte
-Si encuentras problemas:
+👥 Autores
+[Tu Nombre]
 
-Revisa la sección de Solución de Problemas
+Universidad de las Fuerzas Armadas ESPE
 
-Verifica los logs
+Departamento de Ciencias de la Computación
 
-Abre un issue en GitHub
+Carrera de Software
+
+Aplicaciones Distribuidas
+
+📅 Fecha
+21 de enero de 2026
