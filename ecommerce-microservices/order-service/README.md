@@ -11,46 +11,53 @@ Microservicio responsable de la gestión de pedidos en el sistema de e-commerce.
 - Actualizar estado de pedidos basado en respuestas de inventario
 
 ## 🏗️ Arquitectura Interna
+```bash
 Order Service
 ├── Controllers (REST API)
 ├── Models (PostgreSQL)
 ├── Services (Lógica de negocio)
 └── RabbitMQ (Publicador/Consumidor)
-
+```
 
 ## 🚀 Configuración Rápida
 
 ### 1. Instalar Dependencias
-
+```bash
 npm install
-2. Configurar Variables de Entorno
 
+```
+
+### 2. Configurar Variables de Entorno
+```bash
 cp .env.example .env
-3. Editar Archivo .env
-env
+```
+### 3. Editar Archivo .env segun tus credenciales
+```bash
 PORT=3001
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=control1_3p_orderdb
-DB_USER=postgres
-DB_PASSWORD=1234
+DB_USER=/*usuario*/
+DB_PASSWORD=/*contraseña*/
 RABBITMQ_URL=amqp://admin:admin123@localhost:5673
 ORDER_EXCHANGE=order_exchange
 INVENTORY_QUEUE=inventory_queue
 RESPONSE_QUEUE=order_response_queue
-4. Ejecutar el Servicio
-bash
+```
+### 4. Ejecutar el Servicio
+```bash
 # Modo desarrollo
 npm run dev
 
 # Modo producción
 npm start
-📡 Endpoints Disponibles
+```
+## 📡 Endpoints Disponibles
 POST /api/v1/orders
 
-🗄️ Estructura de Base de Datos
-Tabla: orders
-sql
+## 🗄️ Estructura de Base de Datos
+## Tabla: orders
+```bash
 CREATE TABLE orders (
     order_id UUID PRIMARY KEY,
     customer_id VARCHAR(255) NOT NULL,
@@ -59,8 +66,9 @@ CREATE TABLE orders (
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
 );
-Tabla: order_items
-sql
+```
+## Tabla: order_items
+```bash
 CREATE TABLE order_items (
     item_id SERIAL PRIMARY KEY,
     order_id UUID NOT NULL,
@@ -68,45 +76,46 @@ CREATE TABLE order_items (
     quantity INTEGER NOT NULL,
     FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE
 );
-🐇 Configuración RabbitMQ
-Publicación de Eventos
-Exchange: order_exchange
+```
+## 🐇 Configuración RabbitMQ
+## Publicación de Eventos
+- Exchange: order_exchange
 
-Routing Key: order.created
+- Routing Key: order.created
 
-Mensaje: Evento OrderCreated
+- Mensaje: Evento OrderCreated
 
-Consumo de Eventos
-Queue: order_response_queue
+## Consumo de Eventos
+- Queue: order_response_queue
 
-Routing Key: inventory.response
+- Routing Key: inventory.response
 
-Mensajes: StockReserved, StockRejected
+- Mensajes: StockReserved, StockRejected
 
-📊 Estados del Pedido
+## 📊 Estados del Pedido
 Estado	Descripción
 PENDING	Pedido creado, esperando verificación de inventario
 CONFIRMED	Stock disponible, pedido confirmado
 CANCELLED	Stock insuficiente, pedido cancelado
 
-📝 Notas de Implementación
-UUIDs: Todos los orderId son generados como UUID v4
+## 📝 Notas de Implementación
+- UUIDs: Todos los orderId son generados como UUID v4
 
-Transacciones: Las operaciones de base de datos son atómicas
+- Transacciones: Las operaciones de base de datos son atómicas
 
-Reconexión: Reconexión automática a RabbitMQ en caso de fallos
+- Reconexión: Reconexión automática a RabbitMQ en caso de fallos
 
-Persistencia: Mensajes RabbitMQ son persistentes
+- Persistencia: Mensajes RabbitMQ son persistentes
 
-Escalabilidad: Puede ejecutarse en múltiples instancias
+- Escalabilidad: Puede ejecutarse en múltiples instancias
 
-🏷️ Convenciones
-Variables de entorno: Todas en mayúsculas con guión bajo
+## 🏷️ Convenciones
+- Variables de entorno: Todas en mayúsculas con guión bajo
 
-Endpoints: Versión en la ruta (/api/v1/)
+- Endpoints: Versión en la ruta (/api/v1/)
 
-Códigos HTTP: Uso apropiado de códigos de estado
+- Códigos HTTP: Uso apropiado de códigos de estado
 
-Logs: Formato estructurado con timestamps
+- Logs: Formato estructurado con timestamps
 
-✅ Order Service está listo para producción
+## ✅ Order Service está listo para producción
